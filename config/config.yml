@@ -1,0 +1,20 @@
+# config.yaml
+
+# File paths
+input_file: data/input/poem_themes.xlsx
+output_dirs:
+  stories: data/output/stories
+  images: data/output/images
+  pdfs: data/output/pdfs
+
+# Story generation settings
+target_age: "5-12"
+story_word_count: 300
+
+# Image generation settings
+image_per_story: 1
+image_width: 512
+image_height: 512
+
+# PDF settings
+page_size: "letter"  # Options: "A4", "letter", etc.
