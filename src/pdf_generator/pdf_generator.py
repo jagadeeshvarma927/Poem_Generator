@@ -3,7 +3,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
-from file_utils import ensure_output_dir
+from src.utils.file_utils import ensure_output_dir
 
 def add_text_to_pdf(story, flow):
     """

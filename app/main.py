@@ -1,4 +1,8 @@
+import sys
 import os
+print("Original PYTHONPATH:", sys.path)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+print("Updated PYTHONPATH:", sys.path)
 import streamlit as st
 from dotenv import load_dotenv
 from src.utils.file_utils import read_themes_from_excel
@@ -14,7 +18,7 @@ import base64
 load_dotenv()
 
 # Load configuration
-config = load_config('config/config.yaml')
+config = load_config('config/config.yml')
 
 # Streamlit UI Configuration
 st.set_page_config(
@@ -81,6 +85,7 @@ elif selected == "Generate Stories":
 # View PDFs page
 elif selected == "View PDFs":
     st.title("📄 View Generated PDFs")
+    os.makedirs(config['output_dirs']['pdfs'], exist_ok=True)
     pdf_files = os.listdir(config['output_dirs']['pdfs'])
     selected_pdf = st.selectbox("Select a PDF to view", pdf_files)
 
