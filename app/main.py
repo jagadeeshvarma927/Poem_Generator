@@ -108,6 +108,6 @@ elif selected == "View PDFs":
 # Footer
 st.markdown("""
 <div style="text-align: center; margin-top: 50px;">
-    <p>Made with ❤️ by Your Name</p>
+    <p>Made with ❤️ by Jagadeesh Varma I</p>
 </div>
 """, unsafe_allow_html=True)

@@ -107,7 +107,7 @@ If you prefer, you can run the scripts directly:
 
 ## 🤗 Credits
 - Built with [Streamlit](https://streamlit.io/), [HuggingFace](https://huggingface.co/), and [ReportLab](https://www.reportlab.com/).
-- Created by [Your Name].
+- Created by [Jagadeesh Varma Indukuri].
 
 ---
 
