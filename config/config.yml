@@ -5,7 +5,8 @@ input_file: data/input/poem_themes.xlsx
 output_dirs:
   stories: data/output/stories
   images: data/output/images
-  pdfs: data/output/pdfs
+  ppts: data/output/pptx  # New directory for PPTX files
+
 
 # Story generation settings
 target_age: "5-12"
