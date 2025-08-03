@@ -55,19 +55,20 @@ def generate_stories_from_themes(input_file, output_dir, target_age="5-12", word
         print("No themes found in the Excel file.")
         return
 
-    for i, theme in enumerate(themes, start=1):
-        print(f"Generating story for theme {i}: {theme}")
+    for idx, theme in enumerate(themes, start=1):
+        print(f"Generating story for theme {idx}: {theme}")
         story = generate_story(theme, target_age, word_count)
         if story:
-            filename = f"story_{i}_{theme.replace(' ', '_').lower()}.txt"
+            filename = f"story_{idx}_{theme.replace(' ', '_').lower()}.txt"
             write_story_to_txt(story, output_dir, filename)
 
 if __name__ == "__main__":
+    pass
     # Paths and parameters
-    input_file = 'data/input/peom_themes.xlsx'
-    output_dir = 'data/output/stories'
-    target_age = "5-12"
-    word_count = 300
+    # input_file = 'data/input/peom_themes.xlsx'
+    # output_dir = 'data/output/stories'
+    # target_age = "5-12"
+    # word_count = 300
 
-    # Generate stories
-    generate_stories_from_themes(input_file, output_dir, target_age, word_count)
+    # # Generate stories
+    # generate_stories_from_themes(input_file, output_dir, target_age, word_count)

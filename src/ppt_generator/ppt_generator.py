@@ -100,22 +100,23 @@ def combine_ppts(input_dir, output_file):
     print(f"Combined PPTX saved to: {output_file}")
 
 if __name__ == "__main__":
-    # Test directories (adjust as needed)
-    stories_dir = "data/output/stories"
-    images_dir = "data/output/images"
-    pptx_dir = "data/output/pptx"
-    combined_pptx = "data/output/pptx/combined_stories.pptx"
+    pass
+    # # Test directories (adjust as needed)
+    # stories_dir = "data/output/stories"
+    # images_dir = "data/output/images"
+    # pptx_dir = "data/output/pptx"
+    # combined_pptx = "data/output/pptx/combined_stories.pptx"
 
-    # Ensure output directory exists
-    if not os.path.exists(pptx_dir):
-        os.makedirs(pptx_dir)
+    # # Ensure output directory exists
+    # if not os.path.exists(pptx_dir):
+    #     os.makedirs(pptx_dir)
 
-    # Test: Create PPTX for each story
-    for story_file in os.listdir(stories_dir):
-        if story_file.endswith(".txt"):
-            story_path = os.path.join(stories_dir, story_file)
-            create_ppt_for_story(story_path, images_dir, pptx_dir)
+    # # Test: Create PPTX for each story
+    # for story_file in os.listdir(stories_dir):
+    #     if story_file.endswith(".txt"):
+    #         story_path = os.path.join(stories_dir, story_file)
+    #         create_ppt_for_story(story_path, images_dir, pptx_dir)
 
-    # Test: Combine all PPTX files into one
-    combine_ppts(pptx_dir, combined_pptx)
-    print("Testing complete. Check the pptx directory and combined_stories.pptx.")
+    # # Test: Combine all PPTX files into one
+    # combine_ppts(pptx_dir, combined_pptx)
+    # print("Testing complete. Check the pptx directory and combined_stories.pptx.")

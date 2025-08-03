@@ -66,7 +66,7 @@ def generate_enhanced_prompt(story_text):
         str: An enhanced prompt for image generation.
     """
     # Using a capable text model to generate a descriptive prompt.
-    text_model = genai.GenerativeModel('gemini-pro')
+    text_model = genai.GenerativeModel('models/gemini-2.5-pro')
     
     enhancement_prompt = f"""
     Based on this children's story excerpt, create a detailed and vivid visual description for an image generation model. The description should be a single paragraph and include details about the characters, their appearance, the setting, colors, mood, and a child-friendly art style like 'storybook illustration' or 'cartoon'.
@@ -154,14 +154,15 @@ def list_available_models():
 if __name__ == "__main__":
     # It's helpful to see which models are available, especially when troubleshooting.
     list_available_models()
+    pass
     
-    if test_image_generation():
-        stories_dir = 'data/output/stories'
-        images_dir = 'data/output/images'
+    # if test_image_generation():
+    #     stories_dir = 'data/output/stories'
+    #     images_dir = 'data/output/images'
         
-        if not os.path.exists(stories_dir):
-            print(f"Stories directory not found at '{stories_dir}'. Skipping image generation for stories.")
-        else:
-            print(f"\nGenerating images for stories in {stories_dir}...")
-            generate_images_for_stories(stories_dir, images_dir)
-            print("\nImage generation for stories completed!")
+    #     if not os.path.exists(stories_dir):
+    #         print(f"Stories directory not found at '{stories_dir}'. Skipping image generation for stories.")
+    #     else:
+    #         print(f"\nGenerating images for stories in {stories_dir}...")
+    #         generate_images_for_stories(stories_dir, images_dir)
+    #         print("\nImage generation for stories completed!")

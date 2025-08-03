@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 
 
 # Add parent directory to PYTHONPATH
@@ -63,6 +64,21 @@ elif selected == "Generate Stories":
         file_path = os.path.join("data/input", "themes.xlsx")
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
+
+        # Define output directories
+        stories_dir = config['output_dirs']['stories']
+        images_dir = config['output_dirs']['images']
+        ppts_dir = config['output_dirs']['ppts']
+
+        # Clear output directories for a fresh session
+        import shutil
+        for dir_path in [stories_dir, ppts_dir]:
+            if os.path.exists(dir_path):
+                shutil.rmtree(dir_path)
+            os.makedirs(dir_path, exist_ok=True)
+        # Only create the images_dir if it doesn't exist (do not delete its contents)
+        if not os.path.exists(images_dir):
+            os.makedirs(images_dir, exist_ok=True)
 
         # Trigger the workflow
         if st.button("Generate Stories"):
