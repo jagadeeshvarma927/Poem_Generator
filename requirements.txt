@@ -9,3 +9,5 @@ streamlit==1.28.0
 streamlit-option-menu==0.3.6
 PyPDF2==3.0.1
 python-pptx==0.6.21
+hugging_face-hub==0.16.4  # For accessing Hugging Face models
+
