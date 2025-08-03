@@ -59,7 +59,9 @@ def generate_stories_from_themes(input_file, output_dir, target_age="5-12", word
         print(f"Generating story for theme {idx}: {theme}")
         story = generate_story(theme, target_age, word_count)
         if story:
-            filename = f"story_{idx}_{theme.replace(' ', '_').lower()}.txt"
+            safe_theme = theme.replace(" ", "_").replace(",", "_").replace(".", "_")
+            short_theme = safe_theme[:10]
+            filename = f"story_{idx}_{short_theme}.txt"
             write_story_to_txt(story, output_dir, filename)
 
 if __name__ == "__main__":
