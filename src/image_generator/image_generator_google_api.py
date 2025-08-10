@@ -4,8 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from src.utils.file_utils import ensure_output_dir
 from src.utils.file_utils import ensure_output_dir
 from PIL import Image
-from langchain_groq import ChatGroq
-from langchain.schema import HumanMessage
+import google.generativeai as genai
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 
@@ -17,23 +16,10 @@ HF_TOKEN = os.getenv('HF_TOKEN')
 if not HF_TOKEN:
     raise ValueError("HF_TOKEN environment variable is not set.")
 
-# Load GROQ_API_KEY from environment variable
-GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY environment variable is not set.")
-
 # Configure the HuggingFace Inference Client
 client = InferenceClient(
     provider="replicate",
     api_key=HF_TOKEN,
-)
-
-# Configure Groq LLM for text enhancement
-llm = ChatGroq(
-    model="deepseek-r1-distill-llama-70b",
-    groq_api_key=GROQ_API_KEY,
-    temperature=0.7,
-    max_tokens=500
 )
 
 def generate_image_from_text(prompt, output_path, filename):
@@ -71,7 +57,7 @@ def generate_image_from_text(prompt, output_path, filename):
 
 def generate_enhanced_prompt(story_text):
     """
-    Creates an enhanced prompt for better image generation using Groq text model.
+    Creates an enhanced prompt for better image generation using a text model.
     
     Args:
         story_text (str): The story text to create a prompt from.
@@ -79,22 +65,21 @@ def generate_enhanced_prompt(story_text):
     Returns:
         str: An enhanced prompt for image generation.
     """
-    # Using Groq model to generate a descriptive prompt.
+    # Using a capable text model to generate a descriptive prompt.
+    text_model = genai.GenerativeModel('models/gemini-2.5-pro')
+    
     enhancement_prompt = f"""
-    Based on this children's story excerpt, create a detailed and vivid visual description for an image generation "stable-diffusion-3.5-large" model. \
-        The description should be a single paragraph and include details about the characters, their appearance, the setting, colors, mood, and a child-friendly art style like 'storybook illustration' for children.
+    Based on this children's story excerpt, create a detailed and vivid visual description for an image generation model. The description should be a single paragraph and include details about the characters, their appearance, the setting, colors, mood, and a child-friendly art style like 'storybook illustration' or 'cartoon'.
 
     Story: "{story_text[:500]}..."
     """
     
     try:
-        message = HumanMessage(content=enhancement_prompt)
-        response = llm.invoke([message])
-        content = response.content
-        if '<think>' in content and '</think>' in content:
-            # Extract only the content after </think>
-            content = content.split('</think>')[-1].strip()
-        return content
+        response = text_model.generate_content(enhancement_prompt)
+        # It's good practice to access the text from the parts of the response.
+        if response.parts:
+            return response.parts[0].text.strip()
+        return f"A colorful and child-friendly illustration of a scene from the story: {story_text[:200]}..."
     except Exception as e:
         print(f"Error enhancing prompt: {e}")
         return f"A colorful and child-friendly illustration of a scene from the story: {story_text[:200]}..."
@@ -152,51 +137,32 @@ def test_image_generation():
     print("-----------------------------")
     return bool(result)
 
-def test_prompt_enhancement():
+def list_available_models():
     """
-    Test function to verify prompt enhancement with Groq is working.
+    Lists available generative models to aid in debugging.
     """
-    test_story = """Once upon a time, there was a brave little monkey named Hanuman who lived in a beautiful forest. He had golden fur and could fly through the air. One day, he decided to help his friend Rama by crossing the ocean to find Sita."""
-    
-    print("--- Testing Prompt Enhancement ---")
+    print("--- Available Generative Models ---")
     try:
-        enhanced_prompt = generate_enhanced_prompt(test_story)
-        print(f"✓ Prompt enhancement successful!")
-        print(f"Enhanced prompt: {enhanced_prompt[:100]}...")
-        return True
+        for model in genai.list_models():
+            if 'generateContent' in model.supported_generation_methods:
+                print(model.name)
     except Exception as e:
-        print(f"✗ Prompt enhancement failed: {e}")
-        return False
-    finally:
-        print("----------------------------------")
-
-def list_groq_model_info():
-    """
-    Display information about the Groq model being used.
-    """
-    print("--- Groq Model Information ---")
-    print(f"Model: deepseek-r1-distill-llama-70b")
-    print(f"Temperature: 0.7")
-    print(f"Max Tokens: 500")
-    print("-----------------------------")
+        print(f"Could not list available models: {e}")
+    print("-----------------------------------")
 
 
 if __name__ == "__main__":
-    # Display model information
-    list_groq_model_info()
+    # It's helpful to see which models are available, especially when troubleshooting.
+    list_available_models()
+    pass
     
-    # Test prompt enhancement
-    test_prompt_enhancement()
-    
-    #pass
-    
-    if test_image_generation():
-        stories_dir = 'data/output/stories'
-        images_dir = 'data/output/images'
+    # if test_image_generation():
+    #     stories_dir = 'data/output/stories'
+    #     images_dir = 'data/output/images'
         
-        if not os.path.exists(stories_dir):
-            print(f"Stories directory not found at '{stories_dir}'. Skipping image generation for stories.")
-        else:
-            print(f"\nGenerating images for stories in {stories_dir}...")
-            generate_images_for_stories(stories_dir, images_dir)
-            print("\nImage generation for stories completed!")
+    #     if not os.path.exists(stories_dir):
+    #         print(f"Stories directory not found at '{stories_dir}'. Skipping image generation for stories.")
+    #     else:
+    #         print(f"\nGenerating images for stories in {stories_dir}...")
+    #         generate_images_for_stories(stories_dir, images_dir)
+    #         print("\nImage generation for stories completed!")

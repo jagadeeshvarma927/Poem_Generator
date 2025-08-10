@@ -1,29 +1,21 @@
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+import google.generativeai as genai
 from src.utils.file_utils import read_themes_from_excel, write_story_to_txt
-from langchain_groq import ChatGroq
-from langchain.schema import HumanMessage
 from dotenv import load_dotenv
-
 load_dotenv()
 
 # Load API key from environment variable
-GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY environment variable is not set.")
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY environment variable is not set.")
 
-# Configure Groq LLM
-llm = ChatGroq(
-    model="deepseek-r1-distill-llama-70b",
-    groq_api_key=GROQ_API_KEY,
-    temperature=0.1,  # Add some creativity to story generation
-    max_tokens=2000   # Ensure enough tokens for longer stories
-)
+# Configure Gemini LLM
+genai.configure(api_key=GOOGLE_API_KEY)
+model = genai.GenerativeModel('models/gemini-2.5-pro')  # Use Gemini Pro for text generation
 
 def generate_story(theme, target_age="5-12", word_count=200):
     """
-    Generates a story based on the given theme using Groq LLM.
+    Generates a story based on the given theme using Gemini LLM.
 
     Args:
         theme (str): The story theme.
@@ -39,19 +31,10 @@ def generate_story(theme, target_age="5-12", word_count=200):
     The story should be simple, easy to understand, and around {word_count} words.
     Include a moral or lesson at the end. Use Indian mythological elements from Ramayana or Mahabharata.
     """
+
     try:
-        # Create a message for the LLM
-        message = HumanMessage(content=prompt)
-        response = llm.invoke([message])
-        
-        # Filter out thinking tags from DeepSeek R1 model
-        content = response.content
-        if '<think>' in content and '</think>' in content:
-            # Extract only the content after </think>
-            content = content.split('</think>')[-1].strip()
-    
-        return content
-  
+        response = model.generate_content(prompt)
+        return response.text
     except Exception as e:
         print(f"Error generating story for theme '{theme}': {e}")
         return ""
@@ -82,12 +65,12 @@ def generate_stories_from_themes(input_file, output_dir, target_age="5-12", word
             write_story_to_txt(story, output_dir, filename)
 
 if __name__ == "__main__":
-    
+    pass
     # Paths and parameters
-    input_file = 'data/input/poem_themes.xlsx'
-    output_dir = 'data/output/stories'
-    target_age = "5-12"
-    word_count = 300
+    # input_file = 'data/input/peom_themes.xlsx'
+    # output_dir = 'data/output/stories'
+    # target_age = "5-12"
+    # word_count = 300
 
-    # Generate stories
-    generate_stories_from_themes(input_file, output_dir, target_age, word_count)
+    # # Generate stories
+    # generate_stories_from_themes(input_file, output_dir, target_age, word_count)

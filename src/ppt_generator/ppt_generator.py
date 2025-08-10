@@ -8,7 +8,7 @@ from pptx.util import Inches
 from pptx.enum.text import PP_ALIGN
 from utils.file_utils import ensure_output_dir
 
-def create_ppt_for_story(story_path, images_dir, output_dir, max_words_per_slide=50):
+def create_ppt_for_story(story_path, images_dir, output_dir, max_words_per_slide=450):
     """
     Creates a PPTX file for a single story.
 
