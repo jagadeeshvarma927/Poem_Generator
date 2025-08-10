@@ -4,9 +4,20 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from pptx import Presentation
-from pptx.util import Inches
+from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 from utils.file_utils import ensure_output_dir
+
+def set_font_size_12pt(text_frame):
+    """
+    Sets the font size to 12pt for all paragraphs in a text frame.
+    
+    Args:
+        text_frame: The text frame to modify
+    """
+    for paragraph in text_frame.paragraphs:
+        for run in paragraph.runs:
+            run.font.size = Pt(12)
 
 def create_ppt_for_story(story_path, images_dir, output_dir, max_words_per_slide=450):
     """
@@ -34,6 +45,10 @@ def create_ppt_for_story(story_path, images_dir, output_dir, max_words_per_slide
     with open(story_path, 'r', encoding='utf-8') as file:
         story = file.read()
     subtitle.text = story[:100]  # Short description
+    
+    # Set font size to 12pt for title and subtitle
+    set_font_size_12pt(title.text_frame)
+    set_font_size_12pt(subtitle.text_frame)
 
     # Add content slides
     words = story.split()
@@ -43,6 +58,9 @@ def create_ppt_for_story(story_path, images_dir, output_dir, max_words_per_slide
         content = slide.shapes.placeholders[1]
         content.text = " ".join(words[i:i + max_words_per_slide])
         content.text_frame.paragraphs[0].alignment = PP_ALIGN.LEFT
+        
+        # Set font size to 12pt for content
+        set_font_size_12pt(content.text_frame)
 
     # Add image slide
     image_prefix = os.path.splitext(story_name)[0]
@@ -57,8 +75,6 @@ def create_ppt_for_story(story_path, images_dir, output_dir, max_words_per_slide
     # Save PPTX
     prs.save(ppt_path)
     print(f"PPTX created: {ppt_path}")
-
-
 
 
 def combine_ppts(input_dir, output_file):
@@ -78,10 +94,14 @@ def combine_ppts(input_dir, output_file):
             for slide in src_prs.slides:
                 slide_layout = prs.slide_layouts[0]
                 new_slide = prs.slides.add_slide(slide_layout)
+                
+                # Track text content for the slide
+                slide_text = ""
+                
                 for shape in slide.shapes:
                     if shape.has_text_frame:
                         for paragraph in shape.text_frame.paragraphs:
-                            new_slide.shapes[0].text += paragraph.text + "\n"
+                            slide_text += paragraph.text + "\n"
                     elif shape.shape_type == 13:  # Picture
                         # Save image to a temp file and re-insert
                         image = shape.image
@@ -96,6 +116,12 @@ def combine_ppts(input_dir, output_file):
                         height = shape.height
                         new_slide.shapes.add_picture(tmp_img_path, left, top, width, height)
                         os.remove(tmp_img_path)
+                
+                # Add text content to the new slide and set font size to 12pt
+                if slide_text.strip():
+                    new_slide.shapes[0].text = slide_text
+                    set_font_size_12pt(new_slide.shapes[0].text_frame)
+                    
     prs.save(output_file)
     print(f"Combined PPTX saved to: {output_file}")
 

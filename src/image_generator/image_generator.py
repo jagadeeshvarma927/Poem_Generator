@@ -81,10 +81,8 @@ def generate_enhanced_prompt(story_text):
     """
     # Using Groq model to generate a descriptive prompt.
     enhancement_prompt = f"""
-    Based on this children's story excerpt, create a detailed and vivid visual description for an image generation "stable-diffusion-3.5-large" model. \
-        The description should be a single paragraph and include details about the characters, their appearance, the setting, colors, mood, and a child-friendly art style like 'storybook illustration' for children.
-
-    Story: "{story_text[:500]}..."
+    Based on the following children's story ,create a two line summary description for an image generation model.
+    Story: "{story_text}..."
     """
     
     try:
